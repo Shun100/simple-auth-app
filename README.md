@@ -36,8 +36,20 @@
     }
   ```
 
+- コンパイラ設定
+  - デフォルトではIDEの内臓コンパイラを使用するので、Gradleのコンパイラを使用するよう変更する
+    - `settings` -> `Build, Execution, Deployment` -> `Gradle` -> `Build and run using`をGradleに変更
+
 ## ビルド方法
 
 - `./gradlew bootRun`
   - キャッシュを使用しない場合は`./gradlew clean bootRun`
   - ビルド後`localhost:8080`にアクセスすると`localhost:8080/login`にリダイレクトしてSpring Securityデフォルトのログインページが表示される
+
+## Memo
+
+### Spring Securityのコンポーネント
+
+- `SecurityConfig`: アクセス権限の設定、ログイン・ログアウト処理の設定を記述する
+- `UserDetails`: ユーザ名, パスワード, 権限などユーザに関する設定情報を記述する
+- `UserDetailService`: `UserDetails`を取得するメソッドを定義する

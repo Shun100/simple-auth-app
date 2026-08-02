@@ -11,7 +11,7 @@ public class IndexController {
    * Spring Securityがデフォルトのログイン/ログアウトメソッドを用意してくれているのでそれを利用している
    */
 
-  @GetMapping
+  @GetMapping("/home")
   public String index() { return "index"; } // view名はtemplatesからの相対パスで記述する
 
   @GetMapping("/login")

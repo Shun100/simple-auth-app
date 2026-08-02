@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
@@ -9,6 +10,6 @@
   <p>トップページ</p>
 </head>
 <body>
-<a th:href="@{/logout}">ログアウト</a>
+<a href="./logout.html" th:href="@{/logout}">ログアウト</a>
 </body>
 </html>
