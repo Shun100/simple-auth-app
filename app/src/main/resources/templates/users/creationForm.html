@@ -1,0 +1,36 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang=ja
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::heading}, ~{::content})}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ユーザ作成</title>
+</head>
+<body>
+  <h1 th:fragment="heading">ユーザ作成</h1>
+  <div th:fragment="content">
+    <!-- エラーメッセージ表示部分 -->
+    <div>
+      <p class="text-danger" th:text="${errorMessage}"></p>
+    </div>
+    <form  class="form" th:action="@{/users}" method="post">
+      <div class="row mt-3">
+        <label for="username" class="col-sm-3 col-form-label">ユーザ名</label>
+        <input type="text" id="username" name="username" th:value="${username}" class="col-sm-9 form-control">
+      </div>
+      <div class="row mt-3">
+        <label for="password" class="col-sm-3 col-form-label">パスワード</label>
+        <!-- th-fieldはth:objectで指定したオブジェクトに自動的にマッピングされる -->
+        <input type="password" id="password" name="password" th:value="${password}" class="col-sm-9 form-control">
+      </div>
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <button type="submit" class="btn btn-primary">作成</button>
+        <a th:href="@{/users}" class="btn btn-secondary">キャンセル</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

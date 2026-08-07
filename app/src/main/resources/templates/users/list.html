@@ -1,0 +1,34 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang=ja
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::heading}, ~{::content})}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ユーザ一覧</title>
+</head>
+<body>
+  <h1 th:fragment="heading">ユーザ一覧</h1>
+  <div th:fragment="content">
+    <div class="d-flex gap-3">
+      <a th:href="@{/}">トップページ</a>
+      <a th:href="@{/users/creationForm}">ユーザ作成</a>
+    </div>
+    <!-- ユーザ一覧 -->
+    <table class="table mt-4">
+      <thead>
+      <tr>
+        <th>ユーザ名</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="user : ${userList}">
+        <td th:text="${user.username}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
