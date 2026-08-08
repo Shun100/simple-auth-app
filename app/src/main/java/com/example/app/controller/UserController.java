@@ -4,14 +4,18 @@ import com.example.app.dto.CreateUserDTO;
 import com.example.app.entity.UserEntity;
 import com.example.app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/users")
@@ -45,18 +49,49 @@ public class UserController {
   /**
    * ユーザ登録
    * @param dto - 登録情報
+   * @param bindingResult - Validation結果を保持するオブジェクト
+   * @param redirectAttributes - リダイレクトオブジェクト
    * @return redirectToUsers
    */
   @PostMapping // "/"なので省略可能
-  public String create(CreateUserDTO dto, RedirectAttributes redirectAttributes) {
+  public String create(
+    @Validated CreateUserDTO dto,
+    BindingResult bindingResult,
+    RedirectAttributes redirectAttributes) {
+
+    if (bindingResult.hasErrors()) {
+      // 入力内容に不備があれば登録画面に戻ってエラー表示
+      redirectAttributes.addFlashAttribute("errorMessage", getErrorMessage(bindingResult));
+      redirectAttributes.addFlashAttribute("username", dto.username());
+      redirectAttributes.addFlashAttribute("password", dto.password());
+      return "redirect:users/creationForm";
+    }
+
     try {
+      // 登録成功したら一覧画面にリダイレクト
       userService.create(dto);
-      return "redirect:/users"; // 登録成功したら一覧画面にリダイレクト
+      return "redirect:/users";
+
     } catch (RuntimeException e) {
+      // 登録失敗したら登録画面に戻ってエラー表示
       redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
       redirectAttributes.addFlashAttribute("username", dto.username());
       redirectAttributes.addFlashAttribute("password", dto.password());
-      return "redirect:users/creationForm"; // 登録失敗したら登録画面に戻ってエラーメッセージ表示
+      return "redirect:users/creationForm";
     }
+  }
+
+  /**
+   * エラーメッセージ取得
+   * @param bindingResult - Validation結果を保持するオブジェクト
+   * @return errorMessage
+   */
+  private String getErrorMessage(BindingResult bindingResult) {
+    return bindingResult.getFieldErrors()
+      .stream()
+      .map(DefaultMessageSourceResolvable::getDefaultMessage)
+      .filter(Objects::nonNull)
+      .findFirst()
+      .orElse("入力内容に誤りがあります");
   }
 }
