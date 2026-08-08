@@ -2,6 +2,7 @@ package com.example.app.service;
 
 import com.example.app.dto.CreateUserDTO;
 import com.example.app.entity.UserEntity;
+import com.example.app.enums.Authority;
 import com.example.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +33,11 @@ public class UserService {
     String encodedPassword = passwordEncoder.encode(dto.password());
 
     // 登録
-    UserEntity entity = new UserEntity(dto.username(), encodedPassword);
+    UserEntity entity = new UserEntity(
+      dto.username(),
+      encodedPassword,
+      Authority.USER
+    );
     userRepository.create(entity);
   }
 }

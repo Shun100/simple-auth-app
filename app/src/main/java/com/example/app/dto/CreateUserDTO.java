@@ -1,6 +1,7 @@
 package com.example.app.dto;
 
 import com.example.app.annotation.StrongPassword;
+import com.example.app.enums.Authority;
 import jakarta.validation.constraints.NotBlank;
 
 public record CreateUserDTO(

@@ -1,5 +1,6 @@
 package com.example.app.repository;
 
+import com.example.app.enums.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +26,11 @@ public class UserRepository {
 
     List<UserEntity> users = jdbcTemplate.query(
       sql,
-      (rs, rowNum) -> new UserEntity(rs.getString("username"), rs.getString("password")),
+      (rs, rowNum) -> new UserEntity(
+        rs.getString("username"),
+        rs.getString("password"),
+        Authority.valueOf(rs.getString("authority"))
+      ),
       username
     );
 
@@ -41,7 +46,11 @@ public class UserRepository {
 
     return jdbcTemplate.query(
       sql,
-      (rs, rowNum) -> new UserEntity(rs.getString("userName"), rs.getString("password"))
+      (rs, rowNum) -> new UserEntity(
+        rs.getString("userName"),
+        rs.getString("password"),
+        Authority.valueOf(rs.getString("authority"))
+      )
     );
   }
 
@@ -53,16 +62,17 @@ public class UserRepository {
   public void create(UserEntity entity) {
     String sql = """
       INSERT INTO
-        users (username, password)
+        users (username, password, authority)
       VALUES
-        (?, ?)
+        (?, ?, ?::authority)
     """;
 
     try {
-      jdbcTemplate.update(sql, entity.username(), entity.password());
+      jdbcTemplate.update(sql, entity.username(), entity.password(), entity.authority().name());
     } catch (DuplicateKeyException e) {
       throw new RuntimeException("そのユーザ名は既に存在します", e);
     } catch (Exception e) {
+      System.err.println(e.toString());
       throw new RuntimeException("ユーザ登録に失敗しました", e);
     }
   }

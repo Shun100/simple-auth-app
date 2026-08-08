@@ -1,5 +1,6 @@
 package com.example.app.config;
 
+import com.example.app.enums.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -27,25 +28,25 @@ public class DataInitializer {
     return args -> {
       String encodedPassword = passwordEncoder.encode("SamplePassword123");
 
-      jdbcTemplate.update("""
-                INSERT INTO users (username, password)
-                VALUES (?, ?)
-                ON CONFLICT (username)
-                DO UPDATE SET password = EXCLUDED.password
-                """,
-        "Alice",
-        encodedPassword
-      );
+      String sql1 = """
+        INSERT INTO users (username, password, authority)
+        VALUES (?, ?, ?::authority)
+        ON CONFLICT (username)
+        DO UPDATE SET
+          password = EXCLUDED.password,
+          authority = EXCLUDED.authority
+      """;
+      jdbcTemplate.update(sql1, "Alice", encodedPassword, Authority.ADMIN.name());
 
-      jdbcTemplate.update("""
-                INSERT INTO users (username, password)
-                VALUES (?, ?)
-                ON CONFLICT (username)
-                DO UPDATE SET password = EXCLUDED.password
-                """,
-        "Bob",
-        encodedPassword
-      );
+      String sql2 = """
+        INSERT INTO users (username, password, authority)
+        VALUES (?, ?, ?::authority)
+        ON CONFLICT (username)
+        DO UPDATE SET
+          password = EXCLUDED.password,
+          authority = EXCLUDED.authority
+      """;
+      jdbcTemplate.update(sql2, "Bob", encodedPassword, Authority.USER.name());
     };
   }
 }

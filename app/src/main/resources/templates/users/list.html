@@ -21,11 +21,13 @@
       <thead>
       <tr>
         <th>ユーザ名</th>
+        <th>権限</th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="user : ${userList}">
         <td th:text="${user.username}"></td>
+        <td th:text="${user.authority.name}"></td>
       </tr>
       </tbody>
     </table>
