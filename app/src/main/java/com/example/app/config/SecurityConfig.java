@@ -42,6 +42,7 @@ public class SecurityConfig {
       // 認可ルールの設定
       .authorizeHttpRequests(auth -> auth
         .requestMatchers("/login/**").permitAll() // /login/配下は認証なしでアクセス可能 ログイン自体は含まない
+        .requestMatchers("/users/**").hasAuthority("ADMIN") // ユーザ一覧はADMINしかアクセスできない
         .anyRequest().authenticated() // その他は認証が必要
       )
       // フォームログイン機能の設定
@@ -58,6 +59,4 @@ public class SecurityConfig {
 
     return http.build();
   }
-
-
 }

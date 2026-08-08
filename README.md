@@ -53,3 +53,56 @@
 - `SecurityConfig`: アクセス権限の設定、ログイン・ログアウト処理の設定を記述する
 - `UserDetails`: ユーザ名, パスワード, 権限などユーザに関する設定情報を記述する
 - `UserDetailService`: `UserDetails`を取得するメソッドを定義する
+
+### 認可の設定対象と設定方法
+
+- 設定対象
+  - ページ (HTML)
+  - メソッド
+  - リソース (URL)
+
+- 設定方法
+  - ページに対して設定する方法
+
+  ```HTML
+    <!-- ライブラリ追加 -->
+    <html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <!-- タグに対して権限設定 -->
+    <li sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/users}">ユーザ一覧</a></li>
+  ```
+
+  - メソッドに対して設定する方法
+
+  ```Java
+    // メソッドに対して権限設定
+    /* UserService.java */
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<UserEntity> findAll() {
+      return userRepository.findAll();
+    }
+
+    // 権限設定有効化
+    /* MethodSecurityConfig.java */
+    @Configuration
+    @EnableMethodSecurity(prePostEnabled = true)
+      public class MethodSecurityConfig {
+    }
+  ```
+
+  - リソースに対して設定する方法
+
+  ```Java
+    // SecurityFilterに設定を追加する
+    /* SecurityConfig.java */
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+      http
+        // 認可ルールの設定
+        .authorizeHttpRequests(auth -> auth
+          .requestMatchers("/login/**").permitAll()
+          .requestMatchers("/users/**").hasAuthority("ADMIN") //  権限設定
+          .anyRequest().authenticated()
+        )
+    }
+  ```

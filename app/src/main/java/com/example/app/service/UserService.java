@@ -5,6 +5,7 @@ import com.example.app.entity.UserEntity;
 import com.example.app.enums.Authority;
 import com.example.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class UserService {
    * ユーザ全件検索
    * @return users - ユーザ一覧
    */
+  @PreAuthorize("hasAuthority('ADMIN')")
   public List<UserEntity> findAll() {
     return userRepository.findAll();
   }
@@ -28,6 +30,7 @@ public class UserService {
    * ユーザ登録
    * @param dto - 登録情報
    */
+  @PreAuthorize("hasAuthority('ADMIN')")
   public void create(CreateUserDTO dto) {
     // パスワードのエンコード
     String encodedPassword = passwordEncoder.encode(dto.password());
