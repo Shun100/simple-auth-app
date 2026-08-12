@@ -106,3 +106,50 @@
         )
     }
   ```
+
+## HTTPS化
+
+- 1. 証明書を生成する
+
+```bash
+keytool -genkeypair \
+  -alias springboot \
+  -keyalg RSA \
+  -keysize 2048 \
+  -storetype PKCS12 \
+  -keystore keystore.p12 \
+  -validity 3650
+```
+
+- 2. 証明書をSpring Bootプロジェクトの`resources`下に配置する
+
+```text
+src/
+└── main/
+    └── resources/
+        └── keystore.p12
+```
+
+- 3. `application.properties`に設定を追加する
+
+```properties
+server.port=8443 # 本番では通常443を使う
+
+server.ssl.enabled=true
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-password=your-password
+server.ssl.key-store-type=PKCS12
+server.ssl.key-alias=springboot
+```
+
+- 4. `https://localhost:8443`にアクセスする
+
+- 補足
+  - `keystore.p12`には正確には証明書だけでなく鍵もセットになったファイル
+
+  ```text
+  keystore.p12
+    ├─ 秘密鍵（Private Key）
+    └─ 証明書（Certificate）
+        └─ 公開鍵（Public Key）
+  ```
