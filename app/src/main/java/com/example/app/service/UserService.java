@@ -39,7 +39,7 @@ public class UserService {
     UserEntity entity = new UserEntity(
       dto.username(),
       encodedPassword,
-      Authority.USER
+      dto.authority()
     );
     userRepository.create(entity);
   }

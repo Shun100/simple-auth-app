@@ -2,6 +2,7 @@ package com.example.app.controller;
 
 import com.example.app.dto.CreateUserDTO;
 import com.example.app.entity.UserEntity;
+import com.example.app.enums.Authority;
 import com.example.app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -42,7 +43,10 @@ public class UserController {
    * @return creationFormHtml
    */
   @GetMapping("/creationForm")
-  public String showCreationForm() {
+  public String showCreationForm(Model model) {
+    // セレクトボックス用に権限一覧を渡す
+    model.addAttribute("authorities", Authority.values());
+
     return "users/creationForm"; // templateからの相対パス creationForm.html
   }
 
@@ -62,8 +66,9 @@ public class UserController {
     if (bindingResult.hasErrors()) {
       // 入力内容に不備があれば登録画面に戻ってエラー表示
       redirectAttributes.addFlashAttribute("errorMessage", getErrorMessage(bindingResult));
-      redirectAttributes.addFlashAttribute("username", dto.username());
-      redirectAttributes.addFlashAttribute("password", dto.password());
+      redirectAttributes.addFlashAttribute("defaultUsername", dto.username());
+      redirectAttributes.addFlashAttribute("defaultPassword", dto.password());
+      redirectAttributes.addFlashAttribute("defaultAuthority", dto.authority());
       return "redirect:users/creationForm";
     }
 
@@ -75,8 +80,9 @@ public class UserController {
     } catch (RuntimeException e) {
       // 登録失敗したら登録画面に戻ってエラー表示
       redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-      redirectAttributes.addFlashAttribute("username", dto.username());
-      redirectAttributes.addFlashAttribute("password", dto.password());
+      redirectAttributes.addFlashAttribute("defaultUsername", dto.username());
+      redirectAttributes.addFlashAttribute("defaultPassword", dto.password());
+      redirectAttributes.addFlashAttribute("defaultAuthority", dto.authority());
       return "redirect:users/creationForm";
     }
   }
